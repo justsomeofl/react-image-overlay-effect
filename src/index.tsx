@@ -6,7 +6,9 @@ type Props = {
    * Description for the image when the overlay effect
    * is active
    */
-  description: React.ReactNode
+  description: React.ReactNode;
+  disableHover: boolean;
+  opacity: number;
 } & React.ImgHTMLAttributes<HTMLImageElement>
 
 const ContentContainer = styled.div`
@@ -15,7 +17,13 @@ const ContentContainer = styled.div`
   &:hover #overlay-content {
     opacity: 1;
   }
-`
+
+const ContentContainerNoHover = styled.div`
+  position: relative;
+
+  #overlay-content {
+    opacity: 1;
+  }`
 
 const OverlayContainer = styled.div`
   display: flex;
@@ -38,14 +46,26 @@ const OverlayContainer = styled.div`
 `
 
 export const ImageOverlay: React.FC<Props> = ({
+  opacity,
+  disableHover,
   description,
   className,
   ...imageProps
 }) => {
+if (disableHover) {
+  return (
+    <ContentContainerNoHover>
+      <OverlayContainer id='overlay-content'>{description}</OverlayContainer>
+      <img className={className} {...imageProps} />
+    </ContentContainerNoHover>
+  )
+
+} else {
   return (
     <ContentContainer>
       <OverlayContainer id='overlay-content'>{description}</OverlayContainer>
       <img className={className} {...imageProps} />
     </ContentContainer>
   )
+  }
 }
